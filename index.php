@@ -26,6 +26,8 @@ function bwpp_scripts() {
 add_action( 'woocommerce_product_options_general_product_data', 'woo_add_custom_general_fields' );
 function woo_add_custom_general_fields() {
 
+    //TODO: MAKE RADIO BUTTON: TRACK/ALBUM
+
   global $woocommerce, $post;
 
   echo '<div class="options_group">';
@@ -55,13 +57,14 @@ function woo_add_custom_general_fields_save($post_id) {
 
 }
 
+if (is_single()) {
+  add_action('woocommerce_before_shop_loop_item', 'new_product_image_iframe');
+}
 
-add_action('woocommerce_before_shop_loop_item', 'new_product_image_iframe');
 add_action('woocommerce_single_product_image_thumbnail_html', 'new_product_image_iframe');
 function new_product_image_iframe() {
 
   global $post;
-
 
   $bandcampID = get_post_meta($post->ID, '_text_field', true);
 
@@ -70,7 +73,7 @@ function new_product_image_iframe() {
     if (is_single()) {
       ?>
       <div class="bwpp_iframe_wrap">
-        <iframe class="bwpp" style="border: 0; width: 100%; height: 100vh;" src="https://bandcamp.com/EmbeddedPlayer/<?php echo $bandcampID; ?>/size=large/bgcol=000/linkcol=e99708/tracklist=false/transparent=true/" seamless></iframe>
+        <iframe class="bwpp" style="border: 0;" src="https://bandcamp.com/EmbeddedPlayer/<?php echo $bandcampID; ?>/size=large/bgcol=000/linkcol=e99708/tracklist=false/transparent=true/" seamless></iframe>
       </div>
       <?php
     } else {
@@ -78,7 +81,7 @@ function new_product_image_iframe() {
 
       ?>
       <div class="bwpp_iframe_wrap">
-        <iframe class="bwpp" style="border: 0; width: 350px; height: 350px;" src="https://bandcamp.com/EmbeddedPlayer/<?php echo $bandcampID; ?>/size=large/bgcol=333333/linkcol=e99708/minimal=true/transparent=true/" seamless></iframe>
+        <iframe class="bwpp" style="border: 0;" src="https://bandcamp.com/EmbeddedPlayer/<?php echo $bandcampID; ?>/size=large/bgcol=333333/linkcol=e99708/minimal=true/transparent=true/" seamless></iframe>
       </div>
       <?php
     }
@@ -86,8 +89,9 @@ function new_product_image_iframe() {
 
   } else {
 
-    if (is_single()) {
-// DISPLAY USUAL PRODUCT IMAGE
+    if ( is_single() ) {
+
+      // DISPLAY USUAL PRODUCT IMAGE
 
       $columns           = apply_filters( 'woocommerce_product_thumbnails_columns', 4 );
       $post_thumbnail_id = get_post_thumbnail_id( $post->ID );
@@ -110,11 +114,11 @@ function new_product_image_iframe() {
       );
 
       if ( has_post_thumbnail() ) {
-        $html  = '<div data-thumb="' . get_the_post_thumbnail_url( $post->ID, 'shop_thumbnail' ) . '" class="woocommerce-product-gallery__image"><a href="' . esc_url( $full_size_image[0] ) . '">';
+        $html = '<div data-thumb="' . get_the_post_thumbnail_url( $post->ID, 'shop_thumbnail' ) . '" class="woocommerce-product-gallery__image"><a href="' . esc_url( $full_size_image[0] ) . '">';
         $html .= get_the_post_thumbnail( $post->ID, 'shop_single', $attributes );
         $html .= '</a></div>';
       } else {
-        $html  = '<div class="woocommerce-product-gallery__image--placeholder">';
+        $html = '<div class="woocommerce-product-gallery__image--placeholder">';
         $html .= sprintf( '<img src="%s" alt="%s" class="wp-post-image" />', esc_url( wc_placeholder_img_src() ), esc_html__( 'Awaiting product image', 'woocommerce' ) );
         $html .= '</div>';
       }
@@ -127,12 +131,6 @@ function new_product_image_iframe() {
       add_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_template_loop_product_thumbnail', 10 );
     }
 
-
-
-
-
   }
-
-
 
 }
