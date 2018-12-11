@@ -23,8 +23,8 @@ function bwpp_scripts() {
 
 
 // Display Fields
-add_action( 'woocommerce_product_options_general_product_data', 'woo_add_custom_general_fields' );
-function woo_add_custom_general_fields() {
+add_action( 'woocommerce_product_options_general_product_data', 'bwpp_woo_add_custom_general_fields' );
+function bwpp_woo_add_custom_general_fields() {
 
     //TODO: MAKE RADIO BUTTON: TRACK/ALBUM
 
@@ -34,7 +34,7 @@ function woo_add_custom_general_fields() {
 
   woocommerce_wp_text_input(
       array(
-          'id'          => '_text_field',
+          'id'          => '_bandcamp_track_id_text_field',
           'label'       => __( 'Bandcamp Track ID', 'woocommerce' ),
           'placeholder' => 'track=682966733',
           'desc_tip'    => 'true',
@@ -48,12 +48,12 @@ function woo_add_custom_general_fields() {
 
 
 // Save Fields
-add_action( 'woocommerce_process_product_meta', 'woo_add_custom_general_fields_save' );
-function woo_add_custom_general_fields_save($post_id) {
+add_action( 'woocommerce_process_product_meta', 'bwpp_woo_add_custom_general_fields_save' );
+function bwpp_woo_add_custom_general_fields_save($post_id) {
   // Text Field
-  $woocommerce_text_field = $_POST['_text_field'];
-  if( !empty( $woocommerce_text_field ) )
-    update_post_meta( $post_id, '_text_field', esc_attr( $woocommerce_text_field ) );
+  $woocommerce_bandcamp_track_id_text_field = $_POST['_bandcamp_track_id_text_field'];
+  if( !empty( $woocommerce_bandcamp_track_id_text_field ) )
+    update_post_meta( $post_id, '_bandcamp_track_id_text_field', esc_attr( $woocommerce_bandcamp_track_id_text_field ) );
 
 }
 
@@ -61,12 +61,12 @@ if (is_single()) {
   add_action('woocommerce_before_shop_loop_item', 'new_product_image_iframe');
 }
 
-add_action('woocommerce_single_product_image_thumbnail_html', 'new_product_image_iframe');
-function new_product_image_iframe() {
+add_action('woocommerce_single_product_image_thumbnail_html', 'bwpp_new_product_image_iframe');
+function bwpp_new_product_image_iframe() {
 
   global $post;
 
-  $bandcampID = get_post_meta($post->ID, '_text_field', true);
+  $bandcampID = get_post_meta($post->ID, '_bandcamp_track_id_text_field', true);
 
   if ($bandcampID) {
 
